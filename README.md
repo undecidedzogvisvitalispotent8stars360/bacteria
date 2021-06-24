@@ -19,6 +19,7 @@
  * (Logo by 'MrB' can be broken in some html previewer, better to open as just file)[logo.png]
  * <em>(thanks for logo by some guy whose dont want to say himself name)</em>
 --------------------------------------------------
+[![Build Status](https://travis-ci.com/wipedlifepotato/bacteria.svg?branch=master)](https://travis-ci.com/wipedlifepotato/bacteria)
 
 # ¤Bacteria¤
 
