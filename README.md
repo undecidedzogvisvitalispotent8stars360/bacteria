@@ -23,6 +23,13 @@
 
 # ¤Bacteria¤
 
+## Features(not only whose in the list):
+*	- cryptocoins JSON-RPC support in C and Lua {in libbacteria}
+*	- ...
+*	- async/sync crypto support in C and Lua (X25519+AES[ECB/CBC]+ChaCha20) {in libbacteria}
+*	- ...
+
+
 ## TODO(for now)
  *	[- async/sync crypto for libbacteria for server and lua script](POP! Is done)
  *	- libgd for images
