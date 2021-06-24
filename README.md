@@ -39,4 +39,6 @@
 ### Debian 10
 
    `sudo apt install lua-sql-postgres-dev automake gcc liblua5.2-dev libjansson-dev libcurl4-gnutls-dev libiniparser-dev libssl-dev libgd-dev libpng-dev libz3-dev libfreetype6-dev`
-	
+
+### Ubuntu Focal
+  `sudo apt-get install -y devscripts build-essential lintian dh-make autoconf lua-sql-postgres-dev automake gcc liblua5.2-dev libjansson-dev libcurl4-gnutls-dev libiniparser-dev libssl-dev libgd-dev libpng-dev libz3-dev libfreetype6-dev liblua5.1-dev libluajit-5.1-dev`
