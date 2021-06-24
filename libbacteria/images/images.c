@@ -44,6 +44,7 @@ RGBa gdRandColor(void) {
 
 void gdGetRandStr(unsigned char *ret, size_t len) {
   char b = 0;
+  ret[len] = 0;
   for (len - 1; len--;) {
     while ((b < '0' || b > '9') && (b < 'a' || b > 'z') &&
            (b < 'A' || b > 'Z')) {
@@ -53,7 +54,6 @@ void gdGetRandStr(unsigned char *ret, size_t len) {
     ret[len] = b;
     b = 0;
   }
-  ret[len] = 0;
 }
 #define MAXSIZEYX                                                              \
   if (x > im->width)                                                           \
@@ -159,12 +159,12 @@ captcha gdDrawCaptcha(void) {
   captcha rt;
 
   char randStr[3];
-  randStr[sizeof(randStr)] = 0;
+  randStr[ sizeof(randStr)-1 ] = 0;
 
   bzero(rt.captcha, CAPTCHALEN);
 
 #define RANDSTRCAPTCHA(a, b, c, file)                                          \
-  gdGetRandStr(randStr, sizeof(randStr));                                      \
+  gdGetRandStr(randStr, sizeof(randStr)-1);                                      \
   gdImageStringTTF(im.im, NULL, black, file, 10, a, b, c, randStr);            \
   sprintf(rt.captcha, "%s%s", rt.captcha, randStr);
 

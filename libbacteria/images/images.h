@@ -58,7 +58,7 @@ int gdFoundColor(const char * name);
 
 
 int writeToFile( void (*fun)(gdImagePtr, FILE*, int), const char namefile[], struct image * im, ui quality);
-captcha gdDrawCaptcha(void);
+captcha gdDrawCaptcha(void) __attribute__((deprecated));
 
 void gdImageClear(struct image * im);
 
