@@ -22,17 +22,29 @@
 /* Define to 1 if you have the `curl' library (-lcurl). */
 #define HAVE_LIBCURL 1
 
+/* Define to 1 if you have the `freetype' library (-lfreetype). */
+#define HAVE_LIBFREETYPE 1
+
+/* Define to 1 if you have the `gd' library (-lgd). */
+#define HAVE_LIBGD 1
+
 /* Define to 1 if you have the `iniparser' library (-liniparser). */
 #define HAVE_LIBINIPARSER 1
 
 /* Define to 1 if you have the `jansson' library (-ljansson). */
 #define HAVE_LIBJANSSON 1
 
+/* Define to 1 if you have the `png' library (-lpng). */
+#define HAVE_LIBPNG 1
+
 /* Define to 1 if you have the `pthread' library (-lpthread). */
 #define HAVE_LIBPTHREAD 1
 
 /* Define to 1 if you have the `ssl' library (-lssl). */
 #define HAVE_LIBSSL 1
+
+/* Define to 1 if you have the `z' library (-lz). */
+#define HAVE_LIBZ 1
 
 /* Define to 1 if you have the <memory.h> header file. */
 #define HAVE_MEMORY_H 1
