@@ -95,6 +95,8 @@ pub2 = k2:getPubKey()
 priv2 = k2:getPrivKey()
 
 
+print("Pub1: ", string.tohex(pub1), string.fromhex(string.tohex(pub1)) == pub1 )
+print("Pub2: ", string.tohex(pub2), string.fromhex(string.tohex(pub2)) == pub2 )
 
 k3 = bacteria_aes:newKeyPair()
 k3:initKeyPair(pub2,priv2)
