@@ -24,15 +24,16 @@
 # ¤Bacteria¤
 
 ## Features(not only whose in the list):
-*	- cryptocoins JSON-RPC support in C and Lua {in libbacteria}
+*	- cryptocoins JSON-RPC support in C and Lua {in libbacteria} {{libcrypto+libjson}}
 *	- ...
-*	- async/sync crypto support in C and Lua (X25519+AES[ECB/CBC]+ChaCha20) {in libbacteria}
+*	- async/sync crypto support in C and Lua (X25519+AES[ECB/CBC]+ChaCha20) {{in libbacteria} {libencdec}}
 *	- ...
+*	- libgd for images. gd functions in C and Lua {in libbacteria} {{libimages}}
 
 
 ## TODO(for now)
  *	[- async/sync crypto for libbacteria for server and lua script](POP! Is done)
- *	- libgd for images
+ *	[- libgd for images](POS! Is done)
  *	- pre-init postgres database and C code for works with it, and lua module for work with it
  *	- own network protocol idea.
  *	- create server
