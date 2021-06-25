@@ -127,3 +127,38 @@ print("Decrypted: ", aesdata_dec)
 k1.clear()
 k2.clear()
 k3.clear()
+
+local function checkGD(width,height,quality)
+	width = width or 120
+	height = height or 120
+	quality = quality or 50
+	print("GD")
+	local color = {}
+	color["red"] = 120
+	color["green"] = 320
+	color["blue"] = 50
+	color["alpha"] = 255
+	img=images.gdInitImage(width,height, color)
+	images.gdDrawRandomLines(img, 100)
+	images.gdDrawRandomPixels(img, 100,300)
+	local color1 = images.gdRandColor()
+	print(color1['red'],' ',color1['green'], ' ', color1['blue'])
+	myIntColor = images.gdInitColor(img, color1)
+	images.gdDrawRect(img, 0,0, 30, 30, myIntColor)
+	images.gdDrawRect(img, 60,60, 30, 30, myIntColor)
+	images.gdDrawRect(img, 60,60, 90, 90, myIntColor)
+	images.gdDrawRect(img, 90,90, 120, 120, myIntColor)
+	images.gdWriteText(img, 0,30, "./fonts/dummy.ttf", 15, 0.2, myIntColor, "TestTTF") 
+	images.gdWriteText(img, 0,45, "./fonts/dummy.ttf", 15, -0.2, myIntColor, "TestTTF") 
+	images.writeToFile(img, "Example.jpg", quality)
+	print(images.gdGetRandStr(30))
+	imgData = images.getImageData(img, quality)
+	c = images.getImageDataRaw(imgData)
+	s = images.getImageDataSize(imgData)
+	--print((c), "size: ",s)
+	images.gdFree(img)
+end
+checkGD()
+
+
+

@@ -16,6 +16,12 @@ INITLUAFUNC(gdRandColor);
 INITLUAFUNC(gdGetRandStr);
 INITLUAFUNC(gdDrawRect);
 INITLUAFUNC(gdDrawLine);
+//INITLUAFUNC(getImageDataPtrChar); // WARNING!!! Ahtung!!! Dont use it, because then some can get memory of program!
+//INITLUAFUNC(getImageDataPtrVoid);
+INITLUAFUNC(getImageDataSize);
+INITLUAFUNC(getImageDataRaw);
+INITLUAFUNC(gdFree);
+INITLUAFUNC(gdWriteText);
 
 static const struct luaL_reg imagesLib [] = {
 	LUAPAIR(gdInitImage)
@@ -24,6 +30,9 @@ static const struct luaL_reg imagesLib [] = {
 	LUAPAIR(gdDrawRandomPixels)
 	LUAPAIR(gdDrawRandomLines)
 	LUAPAIR(getImageData)
+	//LUAPAIR(getImageDataPtrChar)
+	//LUAPAIR(getImageDataPtrVoid)
+	LUAPAIR(getImageDataSize)
 	LUAPAIR(writeToFile)
 	LUAPAIR(gdInitColor)
 	LUAPAIR(gdSetColors)
@@ -33,6 +42,22 @@ static const struct luaL_reg imagesLib [] = {
 	LUAPAIR(gdGetRandStr)
 	LUAPAIR(gdDrawRect)
 	LUAPAIR(gdDrawLine)
+	LUAPAIR(gdFree)
+	LUAPAIR(getImageDataRaw)
+	LUAPAIR(gdWriteText)
 	{NULL,NULL}
+};
+
+int luaopen_libimages(lua_State *L);
+
+/*
+union imageRawData{
+	void * vData;
+	unsigned char * cData;
+};
+*/
+struct ImageData{
+	unsigned char * raw;
+	int size;
 };
 

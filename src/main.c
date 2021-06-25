@@ -5,6 +5,7 @@
 #include <pthread.h>
 #include <time.h>
 
+extern int start_lua(void);
 // void __start(void){} #
 extern void example(void);
 
@@ -12,7 +13,7 @@ int main(int argc, char **argv) {
   catch_badsignals();
   srand(time(NULL));
   if (argc != 3)
-    return eprintf("%s host port\n", argv[0], argv[1], argv[2]);
+    return eprintf("%s host port\n", argv[0]);
 
   struct cryptocoin *cryptocoins = init_cryptocoins("cryptocoins.ini");
   // dump_cryptocoins(cryptocoins);

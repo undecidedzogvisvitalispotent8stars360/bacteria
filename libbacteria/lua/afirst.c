@@ -1,6 +1,7 @@
 #include "libcrypto.h"
 #include "libencdec.h"
 #include "libjson.h"
+#include "libimages.h"
 
 void runAllLuaFilesInDir(lua_State *L, const char *path) {
   DIR *dir;
@@ -17,7 +18,7 @@ void runAllLuaFilesInDir(lua_State *L, const char *path) {
     }
     closedir(dir);
   } else {
-    fprintf(stderr, "WARNING: could not found %s submodule directrory\n");
+    fprintf(stderr, "WARNING: could not found %s submodule directrory\n", path);
   }
 }
 
@@ -45,6 +46,7 @@ int start_lua(void) {
   luaopen_cryptocoins(L);
   luaopen_rpc(L);
   luaopen_encdec(L);
+  luaopen_libimages(L);
   // luaopen_sql(L);
   // initLuaSubmodules(L, "./luasubmodules");
   lua_loadscript(L, init_lua_file_path);

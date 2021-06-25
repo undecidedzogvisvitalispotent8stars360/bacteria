@@ -74,11 +74,6 @@ int luaclear_cryptocoins(lua_State *L) {
         char * rpchost;
         char * cryptocoin_name;
 */
-static void lua_pushtablestring(lua_State *L, char *key, char *value) {
-  lua_pushstring(L, key);
-  lua_pushstring(L, value);
-  lua_settable(L, -3);
-}
 
 int getCryptocoinsTable(lua_State *L) {
   unsigned int c;
@@ -113,10 +108,10 @@ int getCryptocoinsTable(lua_State *L) {
   lua_pushboolean(L, crypto->testnet ? 1 : 0);
   lua_settable(L, -3); /* 3rd element from the stack top */
 
-  lua_pushtablestring(L, "user", crypto->rpcuser);
-  lua_pushtablestring(L, "password", crypto->rpcpassword);
-  lua_pushtablestring(L, "host", crypto->rpchost);
-  lua_pushtablestring(L, "name", crypto->cryptocoin_name);
+  LUA_PUSHTABLESTRING(L, "user", crypto->rpcuser);
+  LUA_PUSHTABLESTRING(L, "password", crypto->rpcpassword);
+  LUA_PUSHTABLESTRING(L, "host", crypto->rpchost);
+  LUA_PUSHTABLESTRING(L, "name", crypto->cryptocoin_name);
 
   lua_pushstring(L, "port");
   lua_pushnumber(L, crypto->rpcport);

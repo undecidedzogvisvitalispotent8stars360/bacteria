@@ -5,7 +5,7 @@
 typedef unsigned int ui;
 #define MAXNAMECOLOR 128
 #define MAXCOLORS 128
-#define CAPTCHALEN (3*4)+1
+#define CAPTCHALEN (3*4)+2
 
 
 struct gdColor{
@@ -43,7 +43,7 @@ RGBa gdRandColor(void);
 struct image gdInitImage(ui width, ui height, RGBa * bgcolor);
 struct image gdInitImageFromFile(const char * filename, ui width, ui height);
 
-int getImageData(struct image * im, ui quality, void * data);
+void * getImageData(struct image *im, ui quality, int * size);
 
 void gdDrawRandomPixels(struct image * im, ui min,ui max);
 void gdDrawRandomLines(struct image * im, ui count);

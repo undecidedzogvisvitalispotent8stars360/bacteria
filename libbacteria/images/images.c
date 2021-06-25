@@ -128,10 +128,12 @@ void gdDrawRandomLines(struct image *im, ui count) {
   }
 }
 
-int getImageData(struct image *im, ui quality, void *data) {
-  int size;
-  data = gdImageJpegPtr(im->im, &size, quality);
-  return size;
+void * getImageData(struct image *im, ui quality, int * size) {
+  void * data = gdImageJpegPtr(im->im, size, quality);
+#ifdef MEMORYDEBUG
+  printf("data is: %p\n", data);
+#endif
+  return data;
 }
 
 int writeToFile(void (*fun)(gdImagePtr, FILE *, int), const char namefile[],
@@ -177,13 +179,13 @@ captcha gdDrawCaptcha(void) {
   gdDrawRandomLines(&im, 5);
   gdImageContrast(im.im, 0.5);
 
-  void *data;
-  int size = getImageData(&im, 95, data);
+  int size;
+  void * data = getImageData(&im, 95, &size);
 
   rt.raw = data;
   rt.size = size;
-
   gdImageDestroy(im.im);
+  if(im.textOnImage != NULL) free(im.textOnImage);
   return rt;
 }
 
