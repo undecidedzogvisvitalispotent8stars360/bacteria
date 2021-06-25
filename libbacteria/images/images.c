@@ -9,7 +9,7 @@ int gdInitColor(struct image *im, RGBa *color) {
                                    color->a);
 }
 
-int gdSetColors(struct image *im, const int i, char *name, RGBa *color) {
+int gdSetColor(struct image *im, const int i, char *name, RGBa *color) {
   if (i > MAXCOLORS || i < 0)
     return -1;
   strncpy(colors[i].name, name, MAXNAMECOLOR);
@@ -17,8 +17,8 @@ int gdSetColors(struct image *im, const int i, char *name, RGBa *color) {
   return 1;
 }
 
-void gdAddColors(struct image *im, char *name, RGBa *color) {
-  if (gdSetColors(im, cColors, name, color) == -1)
+void gdAddColor(struct image *im, char *name, RGBa *color) {
+  if (gdSetColor(im, cColors, name, color) == -1)
     return;
   cColors++;
 }
@@ -152,8 +152,8 @@ captcha gdDrawCaptcha(void) {
   struct image im = gdInitImage(100, 40, &bg);
   RGBa black_ = {0, 0, 0, 255};       // for lua
   RGBa white_ = {255, 255, 255, 255}; // for lua
-  gdAddColors(&im, "black", &black_);
-  gdAddColors(&im, "white", &white_);
+  gdAddColor(&im, "black", &black_);
+  gdAddColor(&im, "white", &white_);
   black = gdFoundColor("black"); // for lua
   white = gdFoundColor("white"); // for lua
   gdDrawLine(&im, 0, 0, im.width, im.height, white);

@@ -52,8 +52,8 @@ int gdDrawRect(struct image * im, ui x, ui y, ui x1, ui x2, int color);
 int gdDrawLine(struct image * im, ui x, ui y, ui x1, ui x2, int color);
 void gdGetRandStr(unsigned char * ret, size_t len);
 
-void gdAddColors(struct image *im,char * name,  RGBa * color);
-int gdSetColors(struct image *im, const int i, char * name,  RGBa * color);
+void gdAddColor(struct image *im,char * name,  RGBa * color);
+int gdSetColor(struct image *im, const int i, char * name,  RGBa * color);
 int gdFoundColor(const char * name);
 
 

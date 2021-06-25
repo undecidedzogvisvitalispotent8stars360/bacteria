@@ -9,8 +9,8 @@ INITLUAFUNC(gdDrawRandomLines);
 INITLUAFUNC(getImageData);
 INITLUAFUNC(writeToFile);
 INITLUAFUNC(gdInitColor);
-INITLUAFUNC(gdSetColors);
-INITLUAFUNC(gdAddColors);
+INITLUAFUNC(gdSetColor);
+INITLUAFUNC(gdAddColor);
 INITLUAFUNC(gdFoundColor);
 INITLUAFUNC(gdRandColor);
 INITLUAFUNC(gdGetRandStr);
@@ -35,8 +35,8 @@ static const struct luaL_reg imagesLib [] = {
 	LUAPAIR(getImageDataSize)
 	LUAPAIR(writeToFile)
 	LUAPAIR(gdInitColor)
-	LUAPAIR(gdSetColors)
-	LUAPAIR(gdAddColors)
+	LUAPAIR(gdSetColor)
+	LUAPAIR(gdAddColor)
 	LUAPAIR(gdFoundColor)
 	LUAPAIR(gdRandColor)
 	LUAPAIR(gdGetRandStr)

@@ -218,16 +218,36 @@ INITLUAFUNC(gdInitColor){
 	return 1;
 }
 
-INITLUAFUNC(gdSetColors){
-
+INITLUAFUNC(gdSetColor){
+        GETIMAGE;
+        char * nameColor = (char*)luaL_checkstring(L, 2);
+	int c = luaL_checknumber(L, 3);
+	GETLUANUM(red);
+	GETLUANUM(green);
+	GETLUANUM(blue);
+	GETLUANUM(alpha);
+	RGBa color = {gd_red,gd_green,gd_blue, gd_alpha};
+	gdSetColor(in, c, nameColor, &color);
+	return 0;
 }
 
-INITLUAFUNC(gdAddColors){
-
+INITLUAFUNC(gdAddColor){
+        GETIMAGE;
+        char * nameColor = (char*)luaL_checkstring(L, 2);
+	GETLUANUM(red);
+	GETLUANUM(green);
+	GETLUANUM(blue);
+	GETLUANUM(alpha);
+	RGBa color = {gd_red,gd_green,gd_blue, gd_alpha};
+	gdAddColor(in, nameColor, &color);
+	return 0;
 }
 
 INITLUAFUNC(gdFoundColor){
-
+        GETIMAGE;
+        char * nameColor = (char*)luaL_checkstring(L, 2);
+	lua_pushnumber(L, gdFoundColor(nameColor));
+	return 1;
 }
 
 INITLUAFUNC(gdRandColor){
