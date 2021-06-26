@@ -1,5 +1,0 @@
-autoscan: warning: missing AC_PROG_CXX wanted by: 
-	assets/leassons/boost/SyncServerAndSyncClient/server.cpp
-	assets/leassons/boost/SyncServerAndSyncClient/client.cpp
-	assets/leassons/boost/SyncServerAndSyncClient/Makefile:8
-	assets/leassons/boost/SyncServerAndSyncClient/Makefile:10

@@ -51,3 +51,10 @@
 
 ### Ubuntu Focal
   `sudo apt-get install -y devscripts build-essential lintian dh-make autoconf lua-sql-postgres-dev automake gcc libjansson-dev libcurl4-gnutls-dev libiniparser-dev libssl-dev libgd-dev libpng-dev libz3-dev libfreetype6-dev liblua5.1-dev libluajit-5.1-dev libgmp-dev`
+
+### Compiling:
+	```
+		autoreconf - i
+		./configure
+		make
+	```

@@ -7,6 +7,7 @@
 	INITLUAFUNC(mpz_getstr);
 	INITLUAFUNC(mpz_add);
 	INITLUAFUNC(mpz_div);
+	INITLUAFUNC(mpz_mod);
 	INITLUAFUNC(mpz_mul);
 	INITLUAFUNC(mpz_mul_ui);
 	INITLUAFUNC(mpz_sub);
@@ -47,6 +48,7 @@ static const struct luaL_reg lgmp [] = {
 	LUAPAIR(mpz_sub)
 	LUAPAIR(mpz_sub_ui)
 	LUAPAIR(mpz_div)
+	LUAPAIR(mpz_mod)
 	LUAPAIR(mpz_mul)
 	LUAPAIR(mpz_add_ui)
 	LUAPAIR(mpz_clear)

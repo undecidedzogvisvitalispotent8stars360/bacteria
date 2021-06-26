@@ -21,6 +21,15 @@ INITLUAFUNC(mpz_div){
 	mpz_div(*la,*lb,*lc);
 	return 0;
 }
+
+INITLUAFUNC(mpz_mod){
+	GETMP(z_t, a,1);
+	GETMP(z_t, b,2);
+	GETMP(z_t, c,3);
+	mpz_mod(*la,*lb,*lc);
+	return 0;
+}
+
 INITLUAFUNC(mpz_mul){
 	GETMP(z_t, a,1);
 	GETMP(z_t, b,2);
