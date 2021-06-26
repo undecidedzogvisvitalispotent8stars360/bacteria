@@ -1,5 +1,0 @@
-Makefile linguist-generated=true
-* linguist-vendored
-*.c linguist-vendored=false
-*.h linguist-vendored=false
-
