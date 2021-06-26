@@ -9,11 +9,15 @@
 	INITLUAFUNC(mpz_div);
 	INITLUAFUNC(mpz_mul);
 	INITLUAFUNC(mpz_mul_ui);
+	INITLUAFUNC(mpz_sub);
+	INITLUAFUNC(mpz_sub_ui);
 	INITLUAFUNC(mpz_add_ui);
 	INITLUAFUNC(mpz_clear);
 
 	INITLUAFUNC(mpf_init);
 	INITLUAFUNC(mpf_add);
+	INITLUAFUNC(mpf_sub);
+	INITLUAFUNC(mpf_sub_ui);
 	INITLUAFUNC(mpf_div);
 	INITLUAFUNC(mpf_mul);
 	INITLUAFUNC(mpf_mul_ui);
@@ -24,6 +28,8 @@
 
 	INITLUAFUNC(mpq_init);
 	INITLUAFUNC(mpq_add);
+//	INITLUAFUNC(mpq_sub);
+//	INITLUAFUNC(mpq_sub_ui);
 	INITLUAFUNC(mpq_add_ui);
 	INITLUAFUNC(mpq_getstr);
 	INITLUAFUNC(mpq_init_str);
@@ -38,6 +44,8 @@ static const struct luaL_reg lgmp [] = {
 	LUAPAIR(mpz_getstr)
 	LUAPAIR(mpz_add)
 	LUAPAIR(mpz_mul_ui)
+	LUAPAIR(mpz_sub)
+	LUAPAIR(mpz_sub_ui)
 	LUAPAIR(mpz_div)
 	LUAPAIR(mpz_mul)
 	LUAPAIR(mpz_add_ui)
@@ -45,6 +53,8 @@ static const struct luaL_reg lgmp [] = {
 
 	LUAPAIR(mpf_init)
 	LUAPAIR(mpf_add)
+	LUAPAIR(mpf_sub)
+	LUAPAIR(mpf_sub_ui)
 	LUAPAIR(mpf_mul_ui)
 	LUAPAIR(mpf_div)
 	LUAPAIR(mpf_mul)
@@ -55,6 +65,7 @@ static const struct luaL_reg lgmp [] = {
 
 	LUAPAIR(mpq_init)
 	LUAPAIR(mpq_add)
+	//LUAPAIR(mpq_sub)
 	//LUAPAIR(mpq_div)
 	LUAPAIR(mpq_add_ui)
 	LUAPAIR(mpq_getstr)

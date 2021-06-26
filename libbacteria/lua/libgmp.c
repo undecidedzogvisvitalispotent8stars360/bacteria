@@ -69,6 +69,22 @@ INITLUAFUNC(mpz_add_ui){
 	return 0;
 }
 
+INITLUAFUNC(mpz_sub){
+	GETMP(z_t, a,1);
+	GETMP(z_t, b,2);
+	GETMP(z_t, c,3);
+	mpz_sub(*la,*lb,*lc);
+	return 0;
+}
+
+INITLUAFUNC(mpz_sub_ui){
+	GETMP(z_t, a,1);
+	GETMP(z_t, b,2);
+	int c = luaL_checknumber(L,3);
+	mpz_sub_ui(*la,*lb,c);
+	return 0;
+}
+
 #define LGMPGETSTR(prefix, format)\
 	GETMP(prefix, a,1);\
 	int c = luaL_checknumber(L,2);\
@@ -145,6 +161,23 @@ INITLUAFUNC(mpf_add_ui){
 	mpf_add_ui(*la,*lb,c);
 }
 
+INITLUAFUNC(mpf_sub){
+	GETMP(f_t, a,1);
+	GETMP(f_t, b,2);
+	GETMP(f_t, c,3);
+	mpf_sub(*la,*lb,*lc);
+	return 0;
+}
+
+INITLUAFUNC(mpf_sub_ui){
+	GETMP(f_t, a,1);
+	GETMP(f_t, b,2);
+	int c = luaL_checknumber(L,3);
+	mpf_sub_ui(*la,*lb,c);
+	return 0;
+}
+
+
 INITLUAFUNC(mpf_getstr){
 	LGMPGETSTR(f_t, "%.Ff");
 }
@@ -156,6 +189,7 @@ INITLUAFUNC(mpf_clear){
 	mpf_clear(*la);
 	free(la);
 }
+
 
 #undef LGMPGETSTR
 

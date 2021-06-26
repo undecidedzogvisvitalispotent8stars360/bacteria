@@ -193,6 +193,8 @@ lgmp.mpz_mul_ui(myZ,myZ, 5)
 myZ1 = lgmp.mpz_init_str("5")
 lgmp.mpz_div(myZ,myZ,myZ1)
 print("New value is:(will be 36)",lgmp.mpz_getstr(myZ, 128))
+lgmp.mpz_sub_ui(myZ,myZ, 40)
+print("New value is:(will be -4)",lgmp.mpz_getstr(myZ, 128))
 lgmp.mpz_clear(myZ)
 
 myF = lgmp.mpf_init()
