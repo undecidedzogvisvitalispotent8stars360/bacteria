@@ -27,6 +27,9 @@
 /* Define to 1 if you have the `gd' library (-lgd). */
 #undef HAVE_LIBGD
 
+/* Define to 1 if you have the `gmp' library (-lgmp). */
+#undef HAVE_LIBGMP
+
 /* Define to 1 if you have the `iniparser' library (-liniparser). */
 #undef HAVE_LIBINIPARSER
 

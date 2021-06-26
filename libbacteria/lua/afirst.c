@@ -2,6 +2,7 @@
 #include "libencdec.h"
 #include "libjson.h"
 #include "libimages.h"
+#include "libgmp.h"
 
 void runAllLuaFilesInDir(lua_State *L, const char *path) {
   DIR *dir;
@@ -47,6 +48,7 @@ int start_lua(void) {
   luaopen_rpc(L);
   luaopen_encdec(L);
   luaopen_libimages(L);
+  luaopen_liblgmp(L);
   // luaopen_sql(L);
   // initLuaSubmodules(L, "./luasubmodules");
   lua_loadscript(L, init_lua_file_path);

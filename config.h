@@ -28,6 +28,9 @@
 /* Define to 1 if you have the `gd' library (-lgd). */
 #define HAVE_LIBGD 1
 
+/* Define to 1 if you have the `gmp' library (-lgmp). */
+#define HAVE_LIBGMP 1
+
 /* Define to 1 if you have the `iniparser' library (-liniparser). */
 #define HAVE_LIBINIPARSER 1
 
