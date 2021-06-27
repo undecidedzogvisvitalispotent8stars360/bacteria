@@ -220,7 +220,7 @@ int verifyIt(uint8_t *signature, size_t signature_size,
   }
   EVP_PKEY *pkey;
   RSA *rsa = NULL;
-  BIO *keybio;
+  BIO *keybio = NULL;
 
   if (type != aRSA) {
     pkey = EVP_PKEY_new_raw_public_key(EVP_PKEY_ED25519, NULL, signingkey,
@@ -258,7 +258,8 @@ int verifyIt(uint8_t *signature, size_t signature_size,
     fprintf(stderr, "verify error\n");
   EVP_MD_CTX_destroy(md);
   EVP_PKEY_free(pkey);
-  BIO_free_all(keybio);
+  if(keybio != NULL)
+  	BIO_free_all(keybio);
 
   //	if(rsa != NULL)
   // RSA_free(rsa);

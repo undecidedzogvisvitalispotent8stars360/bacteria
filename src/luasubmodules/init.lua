@@ -213,7 +213,9 @@ end
 
 function checkRetVal(n)
 	if n == 10 then return "String" end
-	return n*3 % 2
+--	print(n)
+--	print("will be returned: ", n*2%7)
+	return (n*2 % 7)
 end
 
 	--iwould not write much before ed25519rsa.verifyIt, there is bag.

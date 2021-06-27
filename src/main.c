@@ -17,6 +17,18 @@ typedef struct {
 	lua_State * L;
 } servArgs;
 
+static void checkRetVal(lua_State * L, int n){
+	lua_getglobal(L, "checkRetVal");
+	lua_pushnumber(L, n);
+	if (lua_pcall(L, /*args*/1, /*results*/1, 0) != 0) 
+	        luaL_error(L, "error running function `checkRetVal': %s",
+	                 lua_tostring(L, -1));
+	if (!lua_isnumber(L, -1)){
+		printf("(check retval[lua]) Ret val: %s\n", lua_tostring(L,-1) );
+	}else printf("(check retval[lua]) Ret val (num): %d\n", (int)lua_tonumber(L,-1) );
+	lua_pop(L,1);
+}
+
 static int luaServInit(servArgs * args){
 	if( strcmp(args->host, "127.0.0.1") != 0) fprintf(stderr,"WARNING: lua listening not in localhost!\n");
 	int sock=socket(AF_INET, SOCK_STREAM, LUASOCK);
@@ -111,7 +123,8 @@ int main(int argc, char **argv) {
     puts("main server is inited");
   lua_State * L = start_lua();
   puts("start lua server");
-
+for(int i = 0; i < 10; i++)
+  checkRetVal(L, i);
 
   servArgs args_luaserv = {"127.0.0.1", 6565, L};
 
