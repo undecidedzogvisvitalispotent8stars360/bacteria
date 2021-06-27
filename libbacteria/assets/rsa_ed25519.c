@@ -9,6 +9,7 @@
 #include <openssl/x509.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #define INITBIO()                                                              \
   BIO *bio_pub = BIO_new(BIO_s_mem());                                         \
@@ -36,6 +37,48 @@
   BIO_free_all(bio_priv);                                                      \
   BIO_free_all(bio_pub);
 
+#define INITKEYS()\
+  if(rt.pubKeyLen == 0 && rt.privKeyLen > 0){\
+	size_t privKeySize;		\
+	if(rt.type != aRSA){\
+  		size_t keySize;\
+		EVP_PKEY_get_raw_public_key(pkey, NULL, &keySize);\
+		if(keySize  <= 0) {\
+			fprintf(stderr, "Can't init key!\n");\
+			return rt;\
+		}\
+		char tmpKey[keySize];\
+		EVP_PKEY_get_raw_public_key(pkey, tmpKey, &keySize);\
+		free(rt.pubKey);\
+		rt.pubKeyLen = keySize;\
+		rt.pubKey = malloc(keySize*sizeof(char)+1);\
+		memcpy(rt.pubKey, tmpKey, keySize);\
+		rt.pubKey[keySize]=0;\
+		EVP_PKEY_get_raw_private_key(pkey,NULL,&keySize);\
+		char tmpKeyPriv[keySize];\
+		EVP_PKEY_get_raw_private_key(pkey,tmpKeyPriv,&keySize);\
+		free(rt.privKey);\
+		rt.privKey = malloc(sizeof(char)*keySize+1);\
+		rt.privKeyLen=keySize;\
+		memcpy(rt.privKey, tmpKeyPriv, keySize);\
+		rt.privKey[keySize]=0;\
+	}else{\
+		size_t privKeyLen, pubKeyLen;\
+		unsigned char * privKey = GetStrFromLineToLine(rt.privKey, "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----", &privKeyLen,true,false);\
+		unsigned char * pubKey = GetStrFromLineToLine(rt.privKey, "-----BEGIN PUBLIC KEY-----", "-----END PUBLIC KEY-----", &pubKeyLen,true,false);\
+		free(rt.privKey);\
+		rt.privKey = malloc(sizeof(char)*privKeyLen+1);\
+		rt.privKeyLen=privKeyLen;\
+		rt.privKey[privKeyLen] = 0;\
+		memcpy(rt.privKey, privKey, privKeyLen);\
+		free(rt.pubKey);\
+		rt.pubKey = malloc(sizeof(char)*pubKeyLen+1);\
+		rt.pubKeyLen=pubKeyLen;\
+		rt.pubKey[pubKeyLen] = 0;\
+		memcpy(rt.pubKey, pubKey, pubKeyLen);\
+	}\
+  }
+
 typedef enum { false, true } bool;
 
 enum aTypes { ed25519, aRSA };
@@ -46,6 +89,92 @@ struct aKeyPair {
   EVP_PKEY *pkey;
   enum aTypes type;
 };
+
+size_t calcDecodeLength(const char* b64input) { //Calculates the length of a decoded string
+	size_t len = strlen(b64input),
+		padding = 0;
+
+	if (b64input[len-1] == '=' && b64input[len-2] == '=') //last two chars are =
+		padding = 2;
+	else if (b64input[len-1] == '=') //last char is =
+		padding = 1;
+
+	return (len*3)/4 - padding;
+}
+
+int Base64Decode(char* b64message, unsigned char** buffer, size_t* length) { //Decodes a base64 encoded string
+	BIO *bio, *b64;
+
+	int decodeLen = calcDecodeLength(b64message);
+	*buffer = (unsigned char*)malloc(decodeLen + 1);
+	(*buffer)[decodeLen] = '\0';
+
+	bio = BIO_new_mem_buf(b64message, -1);
+	b64 = BIO_new(BIO_f_base64());
+	bio = BIO_push(b64, bio);
+
+	BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL); //Do not use newlines to flush buffer
+	*length = BIO_read(bio, *buffer, strlen(b64message));
+	assert(*length == decodeLen); //length should equal decodeLen, else something went horribly wrong
+	BIO_free_all(bio);
+
+	return (0); //success
+}
+int Base64Encode(const unsigned char* buffer, size_t length, char** b64text) { //Encodes a binary safe base 64 string
+	BIO *bio, *b64;
+	BUF_MEM *bufferPtr;
+
+	b64 = BIO_new(BIO_f_base64());
+	bio = BIO_new(BIO_s_mem());
+	bio = BIO_push(b64, bio);
+
+	BIO_set_flags(bio, BIO_FLAGS_BASE64_NO_NL); //Ignore newlines - write everything in one line
+	BIO_write(bio, buffer, length);
+	BIO_flush(bio);
+	BIO_get_mem_ptr(bio, &bufferPtr);
+	BIO_set_close(bio, BIO_NOCLOSE);
+	BIO_free_all(bio);
+
+	*b64text=(*bufferPtr).data;
+
+	return (0); //success
+}
+
+char * GetStrFromLineToLine(const char fullString[], const char startString[], const char endString[], size_t * retSize, bool fromStartToEnd, bool b64decode){
+		char * pBuf = strstr(fullString, startString);
+		char * eBuf = strstr(fullString, endString);
+		if(!fromStartToEnd){
+			pBuf = strstr(pBuf, "\n");
+			pBuf+=1;
+		}else{
+			eBuf = strstr(eBuf, "\n");
+		}
+		size_t len = eBuf-pBuf;
+		char tmp[ len + 1 ];
+		bzero(tmp, len);
+		for (unsigned int i = 0;i< len && *pBuf != '\0' && pBuf != eBuf;i++){
+			if( !fromStartToEnd && (*(pBuf) == '\n' || (*(pBuf) == ' ')) ){
+				pBuf++;
+				i--;
+				continue;
+			}
+			tmp[i] = *(pBuf++);
+		}
+		tmp[len] = 0;
+//		printf("tmp: %s\n",tmp);
+		if(b64decode){
+	        	char* base64DecodeOutput;
+  			Base64Decode(tmp, (unsigned char **)&base64DecodeOutput, retSize);
+			return base64DecodeOutput;	
+		}else{
+			char * retbuf = malloc( sizeof(char) * len + 1);
+			memcpy(retbuf, tmp, len);
+			retbuf[len]=0;
+			*retSize=len;
+			return retbuf;
+		}
+
+}
 struct aKeyPair generateKeysEd25519(FILE *exitFile) { // 2056, 3
   struct aKeyPair rt;
   rt.type = ed25519;
@@ -64,11 +193,15 @@ struct aKeyPair generateKeysEd25519(FILE *exitFile) { // 2056, 3
   BIOTORT();
   FREEBIO();
 
+  INITKEYS();
+
   EVP_PKEY_CTX_free(pctx);
   rt.pkey = pkey;
   // EVP_PKEY_free(pkey);
   return rt;
 }
+
+
 
 struct aKeyPair generateKeysRSA(unsigned int bits, unsigned int primes,
                                 FILE *exitFile) { // 2056, 3
@@ -121,33 +254,45 @@ struct aKeyPair generateKeysRSA(unsigned int bits, unsigned int primes,
     EVP_PKEY_CTX_free(ctx);
     fprintf(stderr, "err keygen pkey\n");
   }
+  
 
   INITBIO();
   BIOTOFILE();
   BIOTORT();
   FREEBIO();
-
+  INITKEYS();
   EVP_PKEY_CTX_free(ctx);
+  rt.pkey=pkey;
   return rt;
 }
+
 
 struct aKeyPair initPrivKey(const char *filepath,
                             enum aTypes type /*,const char * password*/) {
   struct aKeyPair rt;
   EVP_PKEY *pkey = NULL;
   EVP_PKEY_CTX *ctx = NULL;
-  if (type == aRSA)
-    ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
-  else
-    ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
+  rt.type=type;
+//  if (type == aRSA)
+//    ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_RSA, NULL);
+//  else
+//    ctx = EVP_PKEY_CTX_new_id(EVP_PKEY_ED25519, NULL);
   FILE *f = fopen(filepath, "rb");
+  if(f == NULL){
+	fprintf(stderr, "Can't open file %s\n", filepath);
+	return rt;
+  }
   PEM_read_PrivateKey(f, &pkey, NULL, NULL);
-  rt.pkey = pkey;
+  rt.pkey=pkey;
+  fclose(f);
+
   INITBIO();
   // BIOTOFILE();
   BIOTORT();
   FREEBIO();
-  EVP_PKEY_CTX_free(ctx);
+  INITKEYS();
+//  EVP_PKEY_CTX_free(ctx);
+
   return rt;
 }
 
@@ -206,10 +351,26 @@ int verifyIt(uint8_t *signature, size_t signature_size,const uint8_t * plaintext
 	    fprintf(stderr, "Error MD CTX create\n");
 	    return 0;
 	  }
+        EVP_PKEY * pkey;
+	RSA *rsa = NULL;
+        BIO *keybio;
 
-	EVP_PKEY * pkey = EVP_PKEY_new_raw_public_key( (type==aRSA? EVP_PKEY_RSA : EVP_PKEY_ED25519),NULL, signingkey, signingkey_size);
+	if(type != aRSA){
+		pkey = EVP_PKEY_new_raw_public_key(  EVP_PKEY_ED25519,NULL, signingkey, signingkey_size);
+	}else{
+		  pkey  = EVP_PKEY_new();
+		  keybio = BIO_new_mem_buf((void*)signingkey, -1);
+		  if (keybio==NULL) {
+		      return 0;
+		  }
+		  PEM_read_bio_RSA_PUBKEY(keybio, &rsa,NULL, NULL);
+	//	  printf("%p RSA\n", rsa);
 
-	printf("%p key\n", pkey);
+		  EVP_PKEY_assign_RSA(pkey, rsa);
+	}
+	 
+
+	//printf("%p key\n", pkey);
 	int rtv = -1;
 	
 	if(type != aRSA){
@@ -221,12 +382,17 @@ int verifyIt(uint8_t *signature, size_t signature_size,const uint8_t * plaintext
 		if(rtv == -1) fprintf(stderr, "Error in EVP_DigestVerifyInit.\n");
 	}else{
 		if(1 == EVP_DigestVerifyInit(md, NULL, mdalgo, NULL, pkey))
-			if( 1 == EVP_DigestVerifyUpdate(md, plaintext, plaintext_size) )
-				rtv = EVP_DigestVerifyFinal(md, signingkey,signingkey_size);
+			if( 1 == EVP_DigestVerifyUpdate(md, plaintext, plaintext_size) ){
+				rtv = EVP_DigestVerifyFinal(md, signature,signature_size);
+			}
 	}
 	if(rtv == -1) fprintf(stderr, "verify error\n");
 	EVP_MD_CTX_destroy(md);
 	EVP_PKEY_free(pkey);
+        BIO_free_all(keybio);
+
+//	if(rsa != NULL)
+		//RSA_free(rsa);
 	return rtv;
 	
 	
@@ -251,22 +417,23 @@ int main(void) {
   const char msg[] =
       "test msg";
   char retbuf[1024];
-  size_t sSize = singIt(msg, sizeof(msg), retbuf, keyPair.pkey, EVP_sha512(),ed25519);
+  size_t sSize = singIt(msg, sizeof(msg), retbuf, rsaKeyPair.pkey, EVP_sha512(),aRSA);
   printf("Sign data: %s\n", retbuf);
   char pubKey[1024];
   size_t keySize;
-  struct aKeyPair another_keyPair = generateKeysEd25519(NULL);
+  struct aKeyPair another_keyPair = generateKeysRSA(2048, 3, NULL);
+  printf("aKeyPair\npub->%s\n priv->%s\n", another_keyPair.pubKey, another_keyPair.privKey);
+ 
 
-  EVP_PKEY_get_raw_public_key(keyPair.pkey, pubKey, &keySize);
-
-  int rtv =verifyIt(retbuf, sSize, msg, sizeof(msg), pubKey, keySize, EVP_sha512(), ed25519);
+  int rtv =verifyIt(retbuf, sSize, msg, sizeof(msg), rsaKeyPair.pubKey, keyPair.pubKeyLen, EVP_sha512(), aRSA);
   if(rtv > 0) puts("Verified!");
   else puts("not verified:(");
   puts("Set another key now...");
-  EVP_PKEY_get_raw_public_key(another_keyPair.pkey, pubKey, &keySize);
-  rtv =verifyIt(retbuf, sSize, msg, sizeof(msg), pubKey, keySize, EVP_sha512(), ed25519);
+
+  rtv =verifyIt(retbuf, sSize, msg, sizeof(msg), another_keyPair.pubKey, another_keyPair.pubKeyLen, EVP_sha512(), aRSA);
   if(rtv > 0) puts("Verified!");
   else puts("not verified:(");
+
   EVP_PKEY_free(keyPair.pkey);
   free(keyPair.privKey);
   free(keyPair.pubKey);
