@@ -1,4 +1,4 @@
-#include"base64.h"
+#include"encdec/base64.h"
 //from github gist. thx for code. https://gist.github.com/barrysteyn/7308212
 int Base64Decode(char* b64message, unsigned char** buffer, size_t* length) { //Decodes a base64 encoded string
 	BIO *bio, *b64;

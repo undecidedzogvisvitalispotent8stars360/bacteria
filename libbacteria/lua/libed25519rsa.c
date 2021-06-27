@@ -1,3 +1,5 @@
+#include"libed25519rsa.h"
+/*
 #include"rsa_ed25519.h"
 int main(void) {
   FILE * tmp = fopen("privkey.ed25519", "rb");
@@ -68,3 +70,5 @@ int main(void) {
   free(another_keyPaired25519.pubKey);
   free(another_keyPaired25519.privKey);
 }
+
+*/
