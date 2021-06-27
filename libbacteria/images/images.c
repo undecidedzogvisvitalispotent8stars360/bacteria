@@ -128,8 +128,8 @@ void gdDrawRandomLines(struct image *im, ui count) {
   }
 }
 
-void * getImageData(struct image *im, ui quality, int * size) {
-  void * data = gdImageJpegPtr(im->im, size, quality);
+void *getImageData(struct image *im, ui quality, int *size) {
+  void *data = gdImageJpegPtr(im->im, size, quality);
 #ifdef MEMORYDEBUG
   printf("data is: %p\n", data);
 #endif
@@ -161,12 +161,12 @@ captcha gdDrawCaptcha(void) {
   captcha rt;
 
   char randStr[3];
-  randStr[ sizeof(randStr)-1 ] = 0;
+  randStr[sizeof(randStr) - 1] = 0;
 
   bzero(rt.captcha, CAPTCHALEN);
 
 #define RANDSTRCAPTCHA(a, b, c, file)                                          \
-  gdGetRandStr(randStr, sizeof(randStr)-1);                                      \
+  gdGetRandStr(randStr, sizeof(randStr) - 1);                                  \
   gdImageStringTTF(im.im, NULL, black, file, 10, a, b, c, randStr);            \
   sprintf(rt.captcha, "%s%s", rt.captcha, randStr);
 
@@ -180,12 +180,13 @@ captcha gdDrawCaptcha(void) {
   gdImageContrast(im.im, 0.5);
 
   int size;
-  void * data = getImageData(&im, 95, &size);
+  void *data = getImageData(&im, 95, &size);
 
   rt.raw = data;
   rt.size = size;
   gdImageDestroy(im.im);
-  if(im.textOnImage != NULL) free(im.textOnImage);
+  if (im.textOnImage != NULL)
+    free(im.textOnImage);
   return rt;
 }
 

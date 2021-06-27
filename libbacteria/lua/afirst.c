@@ -1,8 +1,8 @@
 #include "libcrypto.h"
 #include "libencdec.h"
-#include "libjson.h"
-#include "libimages.h"
 #include "libgmp.h"
+#include "libimages.h"
+#include "libjson.h"
 
 void runAllLuaFilesInDir(lua_State *L, const char *path) {
   DIR *dir;

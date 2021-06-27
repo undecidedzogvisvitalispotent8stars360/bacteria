@@ -56,8 +56,8 @@ int lua_rpc_requst(
   if (curl) {
     char userpwd[strlen(a.rpcuser) + strlen(a.rpcpassword) + 2];
     char url[strlen(a.rpchost) + sizeof("http://") + sizeof("65535") + 2];
-    sprintf(userpwd, "%s:%s%c", a.rpcuser, a.rpcpassword,'\0');
-    sprintf(url, "http://%s:%d%c", a.rpchost, a.rpcport,'\0');
+    sprintf(userpwd, "%s:%s%c", a.rpcuser, a.rpcpassword, '\0');
+    sprintf(url, "http://%s:%d%c", a.rpchost, a.rpcport, '\0');
 
     if (s.ptr != NULL) {
 #ifdef debug

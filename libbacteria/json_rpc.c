@@ -111,8 +111,8 @@ json_t *brpc_json_request(struct cryptocoin *c,
   if (curl) {
     char userpwd[strlen(c->rpcuser) + strlen(c->rpcpassword) + 2];
     char url[strlen(c->rpchost) + sizeof("http://") + sizeof("65535") + 2];
-    sprintf(userpwd, "%s:%s%c", c->rpcuser, c->rpcpassword,0);
-    sprintf(url, "http://%s:%d%c", c->rpchost, c->rpcport,0);
+    sprintf(userpwd, "%s:%s%c", c->rpcuser, c->rpcpassword, 0);
+    sprintf(url, "http://%s:%d%c", c->rpchost, c->rpcport, 0);
 
     struct string s;
     init_string(&s);

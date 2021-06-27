@@ -119,8 +119,10 @@ static int x25519_bacteria_test(void) {
   if (pair.pKeyCtx == NULL || pair1.pKeyCtx == NULL) {
     return fprintf(stderr, "can't CTX init\n");
   }
-  printf("pubKey: %s\nLen(strlen): %d\n", pair.pubKey, (int)strlen(pair.pubKey));
-  printf("pubKey1: %s\nLen(strlen): %d\n", pair1.pubKey, (int)strlen(pair1.pubKey));
+  printf("pubKey: %s\nLen(strlen): %d\n", pair.pubKey,
+         (int)strlen(pair.pubKey));
+  printf("pubKey1: %s\nLen(strlen): %d\n", pair1.pubKey,
+         (int)strlen(pair1.pubKey));
   puts("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   size_t skeylen, skeylen1;
 
