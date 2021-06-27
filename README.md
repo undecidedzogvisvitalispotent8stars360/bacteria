@@ -29,7 +29,10 @@
 *	- async/sync crypto support in C and Lua (X25519+AES[ECB/CBC]+ChaCha20) {{in libbacteria} {libencdec}}
 *	- ...
 *	- libgd for images. gd functions in C and Lua {in libbacteria} {{libimages}}
-*	- libgmp for Lua.(for mpz and mpf, primitives) {{libbacteria}}
+*	- libgmp for Lua.(for mpz and mpf, primitives) {{libbacteria}} {{lgmp}}
+*	- ed25519rsa for Lua (sign/verify RSA+ed25519 support) {{libbacteria}} {{ed25519rsa}} 
+*	- ed25519 + RSA + base64 preinit functional for C (sign/verify) {{libbacteria}} 
+*	- ....
 
 
 ## TODO(for now)
