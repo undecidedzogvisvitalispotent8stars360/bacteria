@@ -37,14 +37,17 @@ INITLUAFUNC(generateKeysRSA) {
   char *filepath = NULL;
   FILE *exitFile = NULL;
   int kBits = 8192;
-  int primes = 3;
-  if (lua_isnumber(L, 1))
-    kBits = lua_tonumber(L, 1);
-  if (lua_isnumber(L, 2))
-    primes = lua_tonumber(L, 2);
-  if (lua_isstring(L, 3)) {
+  int primes = 4;
+  if (lua_isstring(L, 1)) {
     filepath = (char *)luaL_checkstring(L, 1);
   }
+
+  if (lua_isnumber(L, 2))
+    kBits = lua_tonumber(L, 2);
+
+  if (lua_isnumber(L, 3))
+    primes = lua_tonumber(L, 3);
+
   if (filepath != NULL) {
     exitFile = fopen(filepath, "wb");
   }
@@ -81,39 +84,50 @@ INITLUAFUNC(singIt) {
   size_t sizeSign = singIt(textToSign, strlen(textToSign), retbuf, in->pkey,
                            EVP_sha512(), in->type);
   retbuf[sizeSign] = 0;
-  lua_pushstring(L, retbuf);
+  lua_pushlstring(L, retbuf, sizeSign);
   lua_pushnumber(L, sizeSign);
   return 2;
 }
 
 INITLUAFUNC(verifyIt) {
-  bool isEd25519 = lua_toboolean(L, 1);
-  char *sign = (char *)luaL_checkstring(L, 2);
-  size_t sSize = luaL_checknumber(L, 3);
-  char *textToVerify = (char *)luaL_checkstring(L, 4);
-  char *pubKey = (char *)luaL_checkstring(L, 5);
-  size_t pubKeyLen = luaL_checknumber(L, 6);
+  int stackSize = lua_gettop(L);
+  lua_pop(L, stackSize-6); // ... bug luajit (print much text before verify...)
+
+  //bool isEd25519 = lua_toboolean(L, 1);
+  char *sign = (char *)luaL_checkstring(L, 1);
+  size_t sSize = luaL_checknumber(L, 2);
+  char *textToVerify = (char *)luaL_checkstring(L, 3);
+  char *pubKey = (char *)luaL_checkstring(L, 4);
+  size_t pubKeyLen = luaL_checknumber(L, 5);
+  //printf("sign: %s\n", sign);
+  //printf("pubKeyLen: %d\n", pubKeyLen);
+  int isEd25519 = lua_toboolean(L,6);
   int r = verifyIt(sign, sSize, textToVerify, strlen(textToVerify), pubKey,
                    pubKeyLen, EVP_sha512(), isEd25519 ? ed25519 : aRSA);
-  if (r < 0)
+  if (r < 0){
+   // printf("return zero");
     return 0;
+  }
+  //printf("return boolean");
   lua_pushboolean(L, r);
   return 1;
 }
 
-INITLUAFUNC(getPubKey) {
+INITLUAFUNC(getaPubKey) {
   INITKEYPAIR(1);
   lua_pushlstring(L, in->pubKey, in->pubKeyLen);
-  return 1;
+  lua_pushnumber(L, in->pubKeyLen);
+  return 2;
 }
 
-INITLUAFUNC(getPrivKey) {
+INITLUAFUNC(getaPrivKey) {
   INITKEYPAIR(1);
   lua_pushlstring(L, in->privKey, in->privKeyLen);
-  return 1;
+  lua_pushnumber(L, in->privKeyLen);
+  return 2;
 }
 
-INITLUAFUNC(freeKey) {
+INITLUAFUNC(freeaKey) {
   INITKEYPAIR(1);
 
   EVP_PKEY_free(in->pkey);

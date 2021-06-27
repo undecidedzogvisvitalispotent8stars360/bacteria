@@ -7,10 +7,10 @@ INITLUAFUNC(generateKeysRSA);
 INITLUAFUNC(initPrivKey);
 INITLUAFUNC(singIt);
 INITLUAFUNC(verifyIt);
-INITLUAFUNC(freeKey);
+INITLUAFUNC(freeaKey);
 
-INITLUAFUNC(getPubKey);
-INITLUAFUNC(getPrivKey);
+INITLUAFUNC(getaPubKey);
+INITLUAFUNC(getaPrivKey);
 
 //INITLUAFUNC(Base64Decode);
 //INITLUAFUNC(Base64Encode);
@@ -22,9 +22,10 @@ LUAPAIR(generateKeysRSA)
 LUAPAIR(initPrivKey)
 LUAPAIR(singIt)
 LUAPAIR(verifyIt)
-LUAPAIR(freeKey)
-LUAPAIR(getPubKey)
-LUAPAIR(getPrivKey)
+LUAPAIR(freeaKey)
+LUAPAIR(getaPubKey)
+LUAPAIR(getaPrivKey)
+{NULL,NULL}
 //LUAPAIR(getPrivPubRaw)
 };
 

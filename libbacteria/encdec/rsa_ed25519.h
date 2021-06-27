@@ -8,7 +8,7 @@
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
 #include <openssl/x509.h>
-
+#include"macros.h"
 
 
 #define INITBIO()                                                              \
@@ -78,10 +78,6 @@
 		memcpy(rt.pubKey, pubKey, pubKeyLen);\
 	}\
   }
-
-#ifndef bool
-	typedef enum { false, true } bool;
-#endif
 
 enum aTypes { ed25519, aRSA };
 

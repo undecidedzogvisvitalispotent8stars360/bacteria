@@ -3,6 +3,7 @@
 #include "libgmp.h"
 #include "libimages.h"
 #include "libjson.h"
+#include "libed25519rsa.h"
 
 void runAllLuaFilesInDir(lua_State *L, const char *path) {
   DIR *dir;
@@ -49,6 +50,7 @@ int start_lua(void) {
   luaopen_encdec(L);
   luaopen_libimages(L);
   luaopen_liblgmp(L);
+  luaopen_libed25519rsa(L);
   // luaopen_sql(L);
   // initLuaSubmodules(L, "./luasubmodules");
   lua_loadscript(L, init_lua_file_path);
