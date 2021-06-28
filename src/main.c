@@ -110,7 +110,7 @@ void luaServer(servArgs *args) {
         fclose(tmp1);
       } else {
         // puts("Read stdout");
-        fflush(lstdout);
+        fflush(stdout);
         //
         fclose(tmp);
         bzero(buf, LUABUF);
