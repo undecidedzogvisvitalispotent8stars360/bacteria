@@ -14,7 +14,7 @@ int luaopen_libimages(lua_State *L) {
   int gd_##what = lua_tonumber(L, -1);                                         \
   lua_pop(L, 1);
 
-#define DEBUG_LIBIMAGES_LUA
+//#define DEBUG_LIBIMAGES_LUA
 
 INITLUAFUNC(gdInitImage) {
   int width = (int)luaL_checknumber(L, 1);
@@ -241,6 +241,7 @@ INITLUAFUNC(gdAddColor) {
   GETLUANUM(blue);
   GETLUANUM(alpha);
   RGBa color = {gd_red, gd_green, gd_blue, gd_alpha};
+  //printf("Color r:%d g:%d b:%d a:%d\n", gd_red, gd_green, gd_blue,gd_alpha);
   gdAddColor(in, nameColor, &color);
   return 0;
 }

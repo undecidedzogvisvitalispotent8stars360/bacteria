@@ -4,6 +4,7 @@ sql = require "luasql.postgres"
 
 bacteria = require (submoduledir .. "bacteria")
 bacteria_aes = require (submoduledir .. "bencdec")
+gd = require ( submoduledir .. "gd" )
 bacteria.init("cryptocoins.ini",{'tgst','tdash'})
 bacteria.dumpCryptocoins()
 
@@ -135,48 +136,50 @@ local function EncDecTest()
 	k3.clear()
 end
 
-local function checkGD(width,height,quality)
-	width = width or 120
-	height = height or 120
-	quality = quality or 50
-
-	print("GD")
-
-	local color = {}
-	color["red"] = 120
-	color["green"] = 320
-	color["blue"] = 50
-	color["alpha"] = 255
-	img=images.gdInitImage(width,height, color)
-	local color2 = {}
-	color2["blue"]=255
-	color["red"]=100
-	color["alpha"]=255
-	color["green"]=0
-	images.gdAddColor(img,"myColor",color)
-
-	images.gdDrawRandomLines(img, 100)
-	images.gdDrawRandomPixels(img, 100,300)
-	local color1 = images.gdRandColor()
-	print(color1['red'],' ',color1['green'], ' ', color1['blue'])
-
-	myIntColor = images.gdInitColor(img, color1)
-	myColor = images.gdFoundColor(img,"myColor")
-
-
-	images.gdDrawRect(img, 0,0, 30, 30, myIntColor)
-	images.gdDrawRect(img, 60,60, 30, 30, myColor)
-	images.gdDrawRect(img, 60,60, 90, 90, myIntColor)
-	images.gdDrawRect(img, 90,90, 120, 120, myColor)
-	images.gdWriteText(img, 0,30, "./fonts/dummy.ttf", 15, 0.2, myIntColor, "TestTTF") 
-	images.gdWriteText(img, 0,45, "./fonts/dummy.ttf", 15, -0.2, myIntColor, "TestTTF") 
-	images.writeToFile(img, "Example.jpg", quality)
-	print(images.gdGetRandStr(30))
-	imgData = images.getImageData(img, quality)
-	c = images.getImageDataRaw(imgData)
-	s = images.getImageDataSize(imgData)
-	--print((c), "size: ",s)
-	images.gdFree(img)
+-- new take array 
+-- local color ={}
+-- color['green'] = 0	color['red']=0
+-- color['alpha'] = 0	color['blue']=0
+-- gd:new(120,120,50,color)
+-- in another parts color is will be INT color
+local function checkGD(width,height,quality,color)
+	img = gd:new(width,height,quality,color)
+	print("initImage")
+	img:initImage() -- can get background color, int not array
+	print("add red color")
+	img:addColor("red", 255, 0, 0, 255)
+	print("initColors")
+	greenColor = img:getColor(0,255,0,255)
+	redColor = img:foundColor("red")
+	randColor = img:getRandColor()
+	print("Sleep one second for another rand color")
+	sleep(1)
+	randColor1 = img:getRandColor()
+	print("done")
+	print("draw random")
+	img:drawRandomLines(1) -- count
+	img:drawRandomPixels(1,2) -- min count, max count
+	print("draw rect")
+	img:drawRect(0,0, 30, 30, redColor)
+	img:drawRect(30,30, 60,60, randColor1)
+	img:drawRect(60,60,90,90, greenColor)
+	img:drawRect(90,90,120,120, randColor)
+	print("drawLine")
+	img:drawLine(0,0,width,height, randColor)
+	img:setDefFont("./fonts/dummy.ttf")
+	--can take defFont
+	--12 and 15 is ptSize; 0.5 and -0.2 is angle; width/2 is x;... height/2 is y;
+	print("drawText")
+	img:drawText("HelloTTF", width/2,height/2, randColor1, 12, 0.5, "./fonts/dummy.ttf")
+	img:drawText("hello ttf", width/3, height/3, randColor1, 15, -0.2) 
+	
+	print("save to file test.jpg")
+--function obj:setQuality(q) ; so img:setQuality(100) for 100 quality before save; getQuality for get current quality
+	img:saveToFile("test.jpg")
+	rawdata, size_rawdata = img:getRawImage()
+	print("Size of img: ", size_rawdata)
+	print("RawData: ", rawdata) 
+	img:clear()
 end
 local function GMPTEST()
 	print("GMP")
@@ -323,10 +326,10 @@ local function checkEd25519rsa ()
 	ed25519rsa.freeaKey(rsa)
 	ed25519rsa.freeaKey(rsa_)
 end
-checkEd25519rsa ()
-GMPTEST()
-CryptocoinsTest()
-checkGD(120,120,100)
-EncDecTest()
+--checkEd25519rsa ()
+--GMPTEST()
+--CryptocoinsTest()
+--checkGD(120,120,100,color)
+--EncDecTest()
 
 
