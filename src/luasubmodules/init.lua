@@ -5,6 +5,8 @@ sql = require "luasql.postgres"
 bacteria = require (submoduledir .. "bacteria")
 bacteria_aes = require (submoduledir .. "bencdec")
 gd = require ( submoduledir .. "gd" )
+--gmp = require ( submoduledir .. "gmp" )
+
 bacteria.init("cryptocoins.ini",{'tgst','tdash'})
 bacteria.dumpCryptocoins()
 
