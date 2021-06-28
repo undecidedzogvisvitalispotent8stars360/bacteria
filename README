@@ -1,4 +1,4 @@
-                                                                                
+```                                                                                
                                                                                 
                                      @###@                                      
                                     ####@##@                                    
@@ -15,7 +15,7 @@
                                     @#%#@#%                                     
                                     @######                                     
                                                                                 
-                                                                                
+```                                                                                
 (Logo by 'MrB' can be broken in some html previewer, better to open as just file)[logo.png]
 (thanks for logo by some guy whose dont want to say himself name)
 --------------------------------------------------
@@ -31,6 +31,7 @@ Features(not only whose in the list):
 	- ed25519rsa for Lua (sign/verify RSA+ed25519 support) {{libbacteria}} {{ed25519rsa}} 
 	- ed25519 + RSA + base64 preinit functional for C (sign/verify) {{libbacteria}} 
 	- ....
+	- (lua_server for debug and server `console` in future)
 TODO(for now):
 	- pre-init postgres database and C code for works with it, and lua module for work with it
 	- own network protocol idea.

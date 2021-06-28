@@ -58,8 +58,17 @@ static int luaServInit(servArgs *args) {
   }
   return sock;
 }
+//to settings file
 #define MAXERRACCEPT 5
-#define LUABUF 2056
+#ifndef NOTMUCHBUF
+	#define LUABUF 5012*2
+#else
+	#ifdef VERYSMALLBUF
+		#define LUABUF 128
+	#else
+		#define LUABUF 512
+	#endif
+#endif
 
 void luaServer(servArgs *args) {
 
