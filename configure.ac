@@ -43,5 +43,7 @@ AC_CONFIG_FILES([
 		 Makefile
                  src/Makefile
 		 libbacteria/Makefile
+		 src/bootstrap/Makefile
+		 src/client/Makefile
 		 ])
 AC_OUTPUT

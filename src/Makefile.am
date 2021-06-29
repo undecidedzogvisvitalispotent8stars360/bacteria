@@ -1,3 +1,4 @@
+SUBDIRS=bootstrap client
 AM_CFLAGS = 
 bin_PROGRAMS = bacteria
 bacteria_SOURCES = async_serv.c main.c signal_handler.c
