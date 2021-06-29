@@ -9,6 +9,7 @@ AM_INIT_AUTOMAKE
 AC_PROG_RANLIB([RANLIB])
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CXX
 
 # Checks for libraries.
 # FIXME: Replace `main' with a function in `-lpthread':
