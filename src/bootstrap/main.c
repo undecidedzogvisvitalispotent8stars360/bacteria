@@ -27,7 +27,16 @@ extern opcode create_opcode(unsigned char a, unsigned char b, unsigned char c, u
 extern void event0(const char params[], ...);
 
 static const opcode opcodes[]={ 
-	INITOPCODE(0x01,0x00,0x0,0x01, event0),
+//keys opcodes and initilization
+	INITOPCODE(0x01,0x00,0x0,0x00, NULL), // Initilization of connect. RSA+ed25519+x25519 exchange. add to network
+	INITOPCODE(0x01,0x00,0x0,0x01, NULL), // update server keys (old keys + new verified keys)
+// info opcodes
+	INITOPCODE(0x03,0x00,0x0,0x00, NULL), // Register server ( keys )
+	INITOPCODE(0x03,0x00,0x0,0x01, NULL), // Update server info (online/offline/users count/cryptocoins/exchanges/etc)
+//list opcodes
+	INITOPCODE(0x04,0x00,0x0,0x00, NULL), // get list of servers
+	INITOPCODE(0x04,0x00,0x0,0x01, NULL), // get list of users
+	INITOPCODE(0x04,0x00,0x0,0x02, NULL), // get list of bootstrap servers
 	{"",NULL}
 };
 void event0(const char params[], ...){
