@@ -2,78 +2,179 @@
 #include<stdlib.h>
 #include<string.h>
 #include<array>
-
-using eventfun =  void(*)(const char params[], ...);
-constexpr short opcode_size = 4;
-
-using opcode_data = std::array<char, opcode_size>;
-
-typedef struct{
-	opcode_data data;
-	eventfun fun;
-}opcode;
-
-extern opcode create_opcode(unsigned char a, unsigned char b, unsigned char c, unsigned char d, eventfun fun);
-extern void event0(const char params[], ...);
-extern void event1(const char params[],...);
+#include<vector>
+#include<iostream>
+#include<map>
+//#include"lua/lua.h"
+#include"lua/luacxx.h"
 
 
-static const opcode opcodes[]={ 
-	{	{0x01,0x00,0x00,0x00}, event0	},
-	{	{0x04,0x06,0x00,0x07}, event1  },
-	{"",NULL}
+//extern void event0(const char params[], ...);
+//extern void event1(const char params[],...);
+
+namespace split{
+//constexpr auto bufsize=2056;
+char ** 
+split_msg(char * buf, const char schar, size_t * splitted_size, size_t msg_len){
+/*
+*/
+	const unsigned long long max_splitted = 120;
+	size_t arr_size=0;
+	char **splitted;
+	splitted = (char**)malloc( sizeof(char*) * arr_size );
+	if(!splitted) abort();
+	char * str;
+	char str2[msg_len];
+	do{
+		bzero(str2, msg_len);
+		str = strchr(buf, schar);
+	
+
+		if(str != NULL || ( str = strchr(buf, '\r') )!=NULL ){
+			arr_size++;
+			splitted = (char**)realloc( splitted,sizeof(char*) * arr_size );
+			if(!splitted) abort();
+
+			memcpy(str2, buf, (str-buf));
+			//printf("str2 = %s\n", str2);
+
+			splitted[arr_size-1] = (char*)malloc( sizeof(char) * strlen(str2) + 1);
+			if( !splitted[arr_size-1] ) abort();
+			
+			strcpy(splitted[arr_size-1], str2); 
+			splitted[arr_size-1][strlen(str2)]=0;
+		}
+		buf=str+1;
+	}while(str != NULL && arr_size < max_splitted);
+	*splitted_size=arr_size;
+
+	return splitted;
+}
+void 
+free_splitted(char  ** what, size_t n){
+	for(n;n--;){
+		if(n == 0) break;
+		if( what[n][0] == 0 ) continue;
+		free((void*) (what[n-1]) );
+	}
+	free((void*)what);
+}
+
+std::vector<std::string> split(char * buf, const char schar, size_t bufsize=0){
+	size_t split_size;
+	std::vector<std::string> rt;
+	if(bufsize == 0)
+		bufsize = strlen(buf);
+	char ** splitted = split_msg(buf, schar, &split_size, bufsize);
+	for(size_t i = 0; i < split_size; i++){
+		rt.push_back( splitted[i] );
+	}
+	free_splitted(splitted, split_size);
+	return rt;
+}
+
+
+};
+namespace events{
+//is idea to disable lua for opcodes as wrapper if is need.
+#ifndef DISABLELUA
+	using fun =  void(*)(lua_State * L, ...);
+#else
+	using fun =  void(*)(const char params[], ...);
+#endif
+	class event{
+			protected:
+				fun m_fun;
+			public:
+				event(fun f): m_fun(f)
+				{}
+template<typename ...args>
+#ifndef DISABLELUA
+		void run(lua_State * L,const char params[], args ... values){ m_fun(L,params, values...); };
+#else
+		void run(const char params[], args ... values){ m_fun(params, values...); };
+#endif
+	};
+
 };
 
-void event1(const char params[],...){
-	puts("event1");
-}
+namespace opcode{
 
-void event0(const char params[], ...){
-	puts("event0");
-}
-
-
-template <typename T, typename T1, size_t sarr> 
-bool equal_array(std::array<T,sarr> arr, T1 data[]){
-	for(unsigned short i = 0; i < sarr; i++){
-		if(arr[i] != data[i]) return false;
+	void event1(lua_State * L, ...){
+		puts("event1");
 	}
-	return true;
-}
 
-template <typename T, typename T1, size_t sarr, size_t sdata> 
-bool equal_array(std::array<T,sarr> arr, std::array<T,sdata> data){
-	if(sdata != sarr) return false;
-	equal_array( arr, data.to_array() );
-}
+	void event0(lua_State * L,  ...){
+		puts("event0");
+	}
 
-void run_opcode(const char data[opcode_size]){
-	for(auto op : opcodes){
-		if(op.fun == NULL) break;
-		if( equal_array(op.data, data) ){
-			op.fun("");
-			return;
+	
+	constexpr short opcode_size = 4;
+	constexpr auto ignorebyte = 0x0E;
+	constexpr auto splitbyte = 0x0F;
+	using eventfun = events::fun;
+	using opcode_data = std::array<char, opcode_size>;
+
+class opcode{
+	protected:
+
+	protected:
+		opcode_data m_data;
+		events::event m_event;
+	public:
+		bool operator==(opcode& a) noexcept{
+			for(unsigned short i = 0; i < opcode_size; i++){
+				if(a.m_data[i] != m_data[i]) return false;
+			}
+			return true;
 		}
 
-	}
-	puts("opcode not found");
+		template<typename T>
+		bool operator==(T const a) noexcept{
+			for(unsigned short i = 0; i < opcode_size; i++){
+				if(a[i] != m_data[i]) return false;
+			}
+			return true;
+		}
+		template<typename T>
+		opcode& operator=(T a[]) noexcept{
+			unsigned long i =0;
+			for(auto b : a){
+				m_data[i++]=b;
+			}
+			return *this;
+		}
+		opcode(opcode_data data, eventfun fun):
+		m_data(data), m_event(fun)
+		{}
+		events::event& getEvent(void) { return m_event; }
+
+
+
+};
+
 }
 
-void run_opcode(opcode_data data){
-	char d[opcode_size];
-	for(unsigned short el =0; el < data.size(); el++)
-		d[el] = data[el];
-	run_opcode( d );
-}
 
-
-//#define INITDATAOPCODE(n, __VA_ARGS__) 
 int
 main(void)
 {
-	char data[4] = {0x01, 0x00, 0x0, 0x01};
- 	opcode_data data1 = {0x01,0x00,0x00,0x00};
- 	run_opcode(data);	
- 	run_opcode(data1);	
-	run_opcode(opcode_data{0x04,0x06,0x00,0x07});
+
+	#ifndef DISABLELUA
+		lua_State * L = start_lua();
+		lua::pushval(L, true,1, 2, "string", "fs", true, false, 1.0, 3.14 );
+
+		lua_close(L);
+	#endif
+	opcode::opcode_data data1 = {0x01,opcode::ignorebyte,opcode::ignorebyte,0x01};
+
+	opcode::opcode op{ {0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01}, opcode::event0 };
+	opcode::opcode op1{ {0x02, opcode::ignorebyte, opcode::ignorebyte, 0x01}, NULL };
+	opcode::opcode op2{ {0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01}, NULL };
+	std::cout << (op == op2) << std::endl;
+	std::cout << (op == data1) << std::endl;
+	op.getEvent().run(NULL,"",NULL);
+
+
+	return 0;
 }
