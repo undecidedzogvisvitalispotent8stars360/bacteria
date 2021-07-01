@@ -1,8 +1,12 @@
 #pragma once
+#ifdef __cplusplus
+	extern "C" {
+#endif
 #define luaL_reg      luaL_Reg
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+
 #include <stdio.h>
 #include <string.h>
 #include <dirent.h>
@@ -25,6 +29,10 @@
   lua_settable(L, -3);\
 }
 
-
 void runAllLuaFilesInDir(lua_State * L, const char * pathdir);
 lua_State *  start_lua(void) ;
+
+#ifdef __cplusplus
+	}
+#endif
+
