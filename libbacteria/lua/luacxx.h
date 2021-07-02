@@ -2,6 +2,8 @@
 #ifndef luacxx
 #define luacxx
 #include"lua.h"
+#include<string>
+#include<map>
 
 namespace lua{
 	template<typename ...args>
