@@ -1,7 +1,9 @@
 #pragma once
 #ifndef EVENTS_H
 #define EVENTS_H
-#include"lua/luacxx.h"
+#include"lua/lua.h"
+#include<array>
+
 namespace events{
 //is idea to disable lua for opcodes as wrapper if is need.
 #ifndef DISABLELUA
