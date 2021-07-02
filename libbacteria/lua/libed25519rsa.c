@@ -91,24 +91,25 @@ INITLUAFUNC(singIt) {
 
 INITLUAFUNC(verifyIt) {
   int stackSize = lua_gettop(L);
-  lua_pop(L, stackSize-6); // ... bug luajit (print much text before verify...)
+  lua_pop(L,
+          stackSize - 6); // ... bug luajit (print much text before verify...)
 
-  //bool isEd25519 = lua_toboolean(L, 1);
+  // bool isEd25519 = lua_toboolean(L, 1);
   char *sign = (char *)luaL_checkstring(L, 1);
   size_t sSize = luaL_checknumber(L, 2);
   char *textToVerify = (char *)luaL_checkstring(L, 3);
   char *pubKey = (char *)luaL_checkstring(L, 4);
   size_t pubKeyLen = luaL_checknumber(L, 5);
-  //printf("sign: %s\n", sign);
-  //printf("pubKeyLen: %d\n", pubKeyLen);
-  int isEd25519 = lua_toboolean(L,6);
+  // printf("sign: %s\n", sign);
+  // printf("pubKeyLen: %d\n", pubKeyLen);
+  int isEd25519 = lua_toboolean(L, 6);
   int r = verifyIt(sign, sSize, textToVerify, strlen(textToVerify), pubKey,
                    pubKeyLen, EVP_sha512(), isEd25519 ? ed25519 : aRSA);
-  if (r < 0){
-   // printf("return zero");
+  if (r < 0) {
+    // printf("return zero");
     return 0;
   }
-  //printf("return boolean");
+  // printf("return boolean");
   lua_pushboolean(L, r);
   return 1;
 }

@@ -1,9 +1,9 @@
 #include "libcrypto.h"
+#include "libed25519rsa.h"
 #include "libencdec.h"
 #include "libgmp.h"
 #include "libimages.h"
 #include "libjson.h"
-#include "libed25519rsa.h"
 
 void runAllLuaFilesInDir(lua_State *L, const char *path) {
   DIR *dir;
@@ -34,9 +34,9 @@ static void luaopen_sql(lua_State * L){
         lua_pop(L, 2);
 }*/
 
-lua_State *  start_lua(void) {
-//  char buff[256];
-//  int error;
+lua_State *start_lua(void) {
+  //  char buff[256];
+  //  int error;
   lua_State *L = lua_open(); /* opens Lua */
   //      luaopen_base(L);             /* opens the basic library */
   //      luaopen_table(L);            /* opens the table library */
@@ -55,16 +55,16 @@ lua_State *  start_lua(void) {
   // initLuaSubmodules(L, "./luasubmodules");
   lua_loadscript(L, init_lua_file_path);
   return L;
-//  while (fgets(buff, sizeof(buff), stdin) != NULL) {
-//    error =
-//        luaL_loadbuffer(L, buff, strlen(buff), "line") || lua_pcall(L, 0, 0, 0);
-//    if (error) {
-//      fprintf(stderr, "%s", lua_tostring(L, -1));
-//      lua_pop(L, 1); /* pop error message from the stack */
-//    }
-//  }
+  //  while (fgets(buff, sizeof(buff), stdin) != NULL) {
+  //    error =
+  //        luaL_loadbuffer(L, buff, strlen(buff), "line") || lua_pcall(L, 0, 0,
+  //        0);
+  //    if (error) {
+  //      fprintf(stderr, "%s", lua_tostring(L, -1));
+  //      lua_pop(L, 1); /* pop error message from the stack */
+  //    }
+  //  }
 
-//  lua_close(L);
-//  return 0;
-
+  //  lua_close(L);
+  //  return 0;
 }

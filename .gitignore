@@ -1,5 +1,5 @@
 # http://www.gnu.org/software/automake
-
+fix_format.sh
 Makefile.in
 /ar-lib
 /mdate-sh

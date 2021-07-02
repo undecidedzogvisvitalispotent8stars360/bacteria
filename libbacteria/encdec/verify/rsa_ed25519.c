@@ -258,8 +258,8 @@ int verifyIt(uint8_t *signature, size_t signature_size,
     fprintf(stderr, "verify error\n");
   EVP_MD_CTX_destroy(md);
   EVP_PKEY_free(pkey);
-  if(keybio != NULL)
-  	BIO_free_all(keybio);
+  if (keybio != NULL)
+    BIO_free_all(keybio);
 
   //	if(rsa != NULL)
   // RSA_free(rsa);
