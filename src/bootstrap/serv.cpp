@@ -1,21 +1,18 @@
 #include "serv.h"
-#include<iostream>
-#include"opcodes.h"
+#include "opcodes.h"
+#include <iostream>
 #define doExit(...)                                                            \
   {                                                                            \
     eprintf(__VA_ARGS__);                                                      \
     exit(EXIT_FAILURE);                                                        \
   }
-static opcode::opcode opcodes[] =
-{
-	{{0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01},
-                    opcode::event0},
-	{{'a', 'b', 'c', 'd'},
-                    opcode::event1},
+static opcode::opcode opcodes[] = {
+    {{0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01}, opcode::event0},
+    {{'a', 'b', 'c', 'd'}, opcode::event1},
 };
 constexpr auto serv_status_lua_var = "server_inited";
 static bool serv_inited;
-void serv_thread(const char * host, const uint16_t port, lua_State * L) {
+void serv_thread(const char *host, const uint16_t port, lua_State *L) {
 
   int ret;
 
@@ -34,8 +31,7 @@ void serv_thread(const char * host, const uint16_t port, lua_State * L) {
   ret = bind(main_descriptor, (struct sockaddr *)&my_addr,
              sizeof(struct sockaddr_in));
   if (ret == -1) {
-    doExit("Can't init listen on %s:%d\n", host,
-           port);
+    doExit("Can't init listen on %s:%d\n", host, port);
   }
   if (listen(main_descriptor, MAX_LISTEN) == -1)
     doExit("Cant start listening\n");
@@ -44,8 +40,6 @@ void serv_thread(const char * host, const uint16_t port, lua_State * L) {
   lua_setglobal(L, serv_status_lua_var);
   lua_pop(L, 1);
   serv_inited = true;
-  
-
 
   /*
           epollfd
@@ -107,34 +101,32 @@ void serv_thread(const char * host, const uint16_t port, lua_State * L) {
           close(events[n].data.fd);
           continue;
         }
-		  lua_getglobal(L,serv_status_lua_var);
-		  serv_inited = lua_toboolean(L,-1);	
-		  lua_pop(L,1);
+        lua_getglobal(L, serv_status_lua_var);
+        serv_inited = lua_toboolean(L, -1);
+        lua_pop(L, 1);
 
-		if(!serv_inited){
-			puts("Stop server?");
-			return;
-		}
+        if (!serv_inited) {
+          puts("Stop server?");
+          return;
+        }
 
-/*
-		   * 
-  opcode::opcode op1{{0x02, opcode::ignorebyte, opcode::ignorebyte, 0x01},
-                     NULL};
-  opcode::opcode op2{{0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01},
-                     NULL};
-  std::cout << (op == op2) << std::endl;
-  */
-		opcode::opcode_data data = {buf[0], buf[1], buf[2], buf[3]};
-		for( auto op : opcodes ){
-			if( op == data ){
-				puts("Opcode found");
-				op.getEvent().run(L, events[n].data.fd,
-				                  ip, port, buf);
-				break;
-			}
-		}//for
+        /*
+                           *
+          opcode::opcode op1{{0x02, opcode::ignorebyte, opcode::ignorebyte,
+          0x01}, NULL}; opcode::opcode op2{{0x01, opcode::ignorebyte,
+          opcode::ignorebyte, 0x01}, NULL}; std::cout << (op == op2) <<
+          std::endl;
+          */
+        opcode::opcode_data data = {buf[0], buf[1], buf[2], buf[3]};
+        for (auto op : opcodes) {
+          if (op == data) {
+            puts("Opcode found");
+            op.getEvent().run(L, events[n].data.fd, ip, port, buf);
+            break;
+          }
+        } // for
         // do_use_fd(events[n].data.fd);
-      }//for(?)
-    }  
-  }     
+      } // for(?)
+    }
+  }
 }

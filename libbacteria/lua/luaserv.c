@@ -1,6 +1,6 @@
-#include"lua/luaserv.h"
+#include "lua/luaserv.h"
 #ifdef __cplusplus
-extern "C"{
+extern "C" {
 #endif
 
 void checkRetVal(lua_State *L, int n) {
@@ -24,7 +24,7 @@ int luaServInit(servArgs *args) {
     fprintf(stderr, "can't init socket for luaServer\n");
     return 0;
   }
-struct sockaddr_in luaServAddr;
+  struct sockaddr_in luaServAddr;
   luaServAddr.sin_family = AF_INET;
   luaServAddr.sin_port = htons(args->port);
   luaServAddr.sin_addr.s_addr = inet_addr(args->host);
