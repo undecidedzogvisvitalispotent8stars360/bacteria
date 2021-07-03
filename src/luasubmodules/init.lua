@@ -328,10 +328,10 @@ local function checkEd25519rsa ()
 	ed25519rsa.freeaKey(rsa)
 	ed25519rsa.freeaKey(rsa_)
 end
---checkEd25519rsa ()
---GMPTEST()
---CryptocoinsTest()
---checkGD(120,120,100,color)
---EncDecTest()
+checkEd25519rsa ()
+GMPTEST()
+CryptocoinsTest()
+EncDecTest()
+checkGD(120,120,100,color)
 
 

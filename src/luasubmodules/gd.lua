@@ -8,7 +8,9 @@ function gd:new(width, height,quality,color)
 		obj.quality = quality or 50
 		obj.gd = nil
 		obj.defFont = {}
-		obj.background = color or obj:getColorFromArray(color)
+		obj.background = color or images.gdRandColor()
+
+
 --
 	function obj:getSize()
 		return obj.width,obj.height
