@@ -1,79 +1,85 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
-#include<array>
 
-using eventfun =  void(*)(const char params[], ...);
-constexpr short opcode_size = 4;
+#include <iostream>
+#include <thread>
 
-using opcode_data = std::array<char, opcode_size>;
+#include "libbacteria/macros.h"
+//#include"serv.h"
+#include "lua/luaserv.h"
+#include <getopt.h>
+#include <unistd.h>
+extern void serv_thread(const char *host, const uint16_t port, lua_State *L);
 
-typedef struct{
-	opcode_data data;
-	eventfun fun;
-}opcode;
+static void usage(char *const program) {
+  puts(PROGRAM_INFO);
+  auto printoption = [&program](const char *longopt, char opt = ' ',
+                                const char *desc) {
+    printf("--%s -%c\t=> %s\n", longopt, opt, desc);
+  };
+  printf("\nUSAGE: %s [options]\n", program);
 
-extern opcode create_opcode(unsigned char a, unsigned char b, unsigned char c, unsigned char d, eventfun fun);
-extern void event0(const char params[], ...);
-extern void event1(const char params[],...);
+  printoption("help", 'h', "help menu");
+  printoption("listen host", 'l', "Host for listening(def: 127.0.0.1)");
+  printoption("port", 'p', "Port for listening (def: 3245)");
 
-
-static const opcode opcodes[]={ 
-	{	{0x01,0x00,0x00,0x00}, event0	},
-	{	{0x04,0x06,0x00,0x07}, event1  },
-	{"",NULL}
+  printoption("luahost", 'j', "Host of listeningluaserv (def: localhost)");
+  printoption("luaport", 'k', "port of listeningluaserv (def: 6596)");
 };
 
-void event1(const char params[],...){
-	puts("event1");
-}
+int main(int argc, char **argv) {
+  char c;
 
-void event0(const char params[], ...){
-	puts("event0");
-}
+  std::string host{"127.0.0.1"};
+  uint16_t port = 3245;
 
+  std::string luahost{"127.0.0.1"};
+  uint16_t luaport = 6596;
 
-template <typename T, typename T1, size_t sarr> 
-bool equal_array(std::array<T,sarr> arr, T1 data[]){
-	for(unsigned short i = 0; i < sarr; i++){
-		if(arr[i] != data[i]) return false;
-	}
-	return true;
-}
+  int option_index;
+  static struct option long_options[] = {{"help", no_argument, 0, 'h'},
+                                         {"host", required_argument, 0, 'l'},
+                                         {"port", required_argument, 0, 'p'},
+                                         {"luahost", required_argument, 0, 'j'},
+                                         {"luaport", required_argument, 0, 'k'},
+                                         {0, 0, 0, 0}};
+  while ((c = getopt_long(argc, argv, "hp:h:", long_options, &option_index)) !=
+         -1) {
+    switch (c) {
+    case 0:
+      if (std::string(long_options[option_index].name) ==
+          std::string("usage")) {
+        usage(argv[0]);
+        exit(1);
+      case 'j':
+        luahost = optarg;
+        break;
+      case 'k':
+        luaport = atoi(optarg);
+        break;
+      case 'l':
+        host = optarg;
+        break;
+      case 'p':
+        port = atoi(optarg);
+        break;
+      case '?':
+        std::cerr << "Undefined argument" << std::endl;
+      default:
+        usage(argv[0]);
+        exit(1);
+        break;
+      }
+    }
+  }
+#ifndef DISABLELUA
+  lua_State *L = start_lua();
+  servArgs luasarg = {(char *)luahost.c_str(), luaport, L};
 
-template <typename T, typename T1, size_t sarr, size_t sdata> 
-bool equal_array(std::array<T,sarr> arr, std::array<T,sdata> data){
-	if(sdata != sarr) return false;
-	equal_array( arr, data.to_array() );
-}
+  // lua::pushval(L, true, 1, 2, "string", "fs", true, false, 1.0, 3.14);
+  std::thread serv(serv_thread, host.c_str(), port, L);
 
-void run_opcode(const char data[opcode_size]){
-	for(auto op : opcodes){
-		if(op.fun == NULL) break;
-		if( equal_array(op.data, data) ){
-			op.fun("");
-			return;
-		}
-
-	}
-	puts("opcode not found");
-}
-
-void run_opcode(opcode_data data){
-	char d[opcode_size];
-	for(unsigned short el =0; el < data.size(); el++)
-		d[el] = data[el];
-	run_opcode( d );
-}
-
-
-//#define INITDATAOPCODE(n, __VA_ARGS__) 
-int
-main(void)
-{
-	char data[4] = {0x01, 0x00, 0x0, 0x01};
- 	opcode_data data1 = {0x01,0x00,0x00,0x00};
- 	run_opcode(data);	
- 	run_opcode(data1);	
-	run_opcode(opcode_data{0x04,0x06,0x00,0x07});
+  std::thread luas(luaServer, &luasarg);
+  serv.join();
+  lua_close(L);
+#endif
+  return 0;
 }

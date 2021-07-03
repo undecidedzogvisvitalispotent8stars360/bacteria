@@ -4,5 +4,8 @@
 
 #define MAX_LISTEN 100
 
-#define PROGRAM_INFO __DATE__ " Bacteria program " __TIME__
+#define PROGRAM_INFO __DATE__ "\tBacteria\t" __TIME__
+#ifndef __cplusplus
 typedef enum{false,true}bool;
+#else
+#endif

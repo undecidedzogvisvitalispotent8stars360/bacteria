@@ -241,7 +241,7 @@ INITLUAFUNC(gdAddColor) {
   GETLUANUM(blue);
   GETLUANUM(alpha);
   RGBa color = {gd_red, gd_green, gd_blue, gd_alpha};
-  //printf("Color r:%d g:%d b:%d a:%d\n", gd_red, gd_green, gd_blue,gd_alpha);
+  // printf("Color r:%d g:%d b:%d a:%d\n", gd_red, gd_green, gd_blue,gd_alpha);
   gdAddColor(in, nameColor, &color);
   return 0;
 }
