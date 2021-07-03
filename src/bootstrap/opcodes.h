@@ -49,7 +49,7 @@ class opcode{
 
 }
 
-
+// events
 namespace opcode{
 	void event1(lua_State * L, int sock, const char * uIp, uint16_t uPort, char* buf, ...);
 	void event0(lua_State * L, int sock, const char * uIp, uint16_t uPort, char* buf, ...);

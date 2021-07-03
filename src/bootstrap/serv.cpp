@@ -117,14 +117,20 @@ void serv_thread(const char *host, const uint16_t port, lua_State *L) {
           opcode::ignorebyte, 0x01}, NULL}; std::cout << (op == op2) <<
           std::endl;
           */
+	bool found=false;
         opcode::opcode_data data = {buf[0], buf[1], buf[2], buf[3]};
         for (auto op : opcodes) {
           if (op == data) {
             puts("Opcode found");
             op.getEvent().run(L, events[n].data.fd, ip, port, buf);
+	    found=true;
             break;
           }
         } // for
+        if(!found){
+		puts("Opcode not founded");
+		close(events[n].data.fd);
+	}
         // do_use_fd(events[n].data.fd);
       } // for(?)
     }

@@ -2,6 +2,7 @@
 #ifndef EVENTS_H
 #define EVENTS_H
 #include"lua/lua.h"
+#include<stdint.h>
 #include<array>
 
 namespace events{
