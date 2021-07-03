@@ -6,11 +6,9 @@
 
 namespace events{
 //is idea to disable lua for opcodes as wrapper if is need.
-#ifndef DISABLELUA
-	using fun =  void(*)(lua_State * L, ...);
-#else
-	using fun =  void(*)(const char params[], ...);
-#endif
+#define EVENTDEF lua_State * L, int sock, const char * uIp, uint16_t uPort, char* buf
+	using fun =  void(*)(EVENTDEF, ...);
+
 	class event{
 			protected:
 				fun m_fun;
@@ -18,11 +16,10 @@ namespace events{
 				event(fun f): m_fun(f)
 				{}
 template<typename ...args>
-#ifndef DISABLELUA
-		void run(lua_State * L,const char params[], args ... values){ m_fun(L,params, values...); };
-#else
-		void run(const char params[], args ... values){ m_fun(params, values...); };
-#endif
+void run(EVENTDEF, args ... values){ 
+	m_fun(L, sock, (const char*)uIp, uPort, buf, values...); 
+};
+
 	};
 
 };

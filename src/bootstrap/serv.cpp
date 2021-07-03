@@ -1,11 +1,18 @@
 #include "serv.h"
-
+#include<iostream>
+#include"opcodes.h"
 #define doExit(...)                                                            \
   {                                                                            \
     eprintf(__VA_ARGS__);                                                      \
     exit(EXIT_FAILURE);                                                        \
   }
-
+static opcode::opcode opcodes[] =
+{
+	{{0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01},
+                    opcode::event0},
+	{{'a', 'b', 'c', 'd'},
+                    opcode::event1},
+};
 constexpr auto serv_status_lua_var = "server_inited";
 static bool serv_inited;
 void serv_thread(const char * host, const uint16_t port, lua_State * L) {
@@ -32,7 +39,7 @@ void serv_thread(const char * host, const uint16_t port, lua_State * L) {
   }
   if (listen(main_descriptor, MAX_LISTEN) == -1)
     doExit("Cant start listening\n");
-
+  printf("(serv) %s:%d listening\n", host, port);
   lua::pushval(L, true);
   lua_setglobal(L, serv_status_lua_var);
   lua_pop(L, 1);
@@ -108,17 +115,26 @@ void serv_thread(const char * host, const uint16_t port, lua_State * L) {
 			puts("Stop server?");
 			return;
 		}
-        printf("%s:%d -> %s\n",ip,port,buf);
-        for (int z = sizeof(buf) - 1; z--;) {
-          // printf("buf[%d] = %c\n", z, buf[z]);
-          if (buf[z] != 0)
-            buf[z] ^= rand() % 10;
-        }
-        if (send(events[n].data.fd, buf, sizeof(buf), MSG_NOSIGNAL) < 0) {
-          perror("Write error");
-        }
+
+/*
+		   * 
+  opcode::opcode op1{{0x02, opcode::ignorebyte, opcode::ignorebyte, 0x01},
+                     NULL};
+  opcode::opcode op2{{0x01, opcode::ignorebyte, opcode::ignorebyte, 0x01},
+                     NULL};
+  std::cout << (op == op2) << std::endl;
+  */
+		opcode::opcode_data data = {buf[0], buf[1], buf[2], buf[3]};
+		for( auto op : opcodes ){
+			if( op == data ){
+				puts("Opcode found");
+				op.getEvent().run(L, events[n].data.fd,
+				                  ip, port, buf);
+				break;
+			}
+		}//for
         // do_use_fd(events[n].data.fd);
-      } // else client end
-    }   // for (events) end
-  }     // for ;; end
+      }//for(?)
+    }  
+  }     
 }

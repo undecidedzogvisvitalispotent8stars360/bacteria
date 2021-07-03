@@ -1,5 +1,9 @@
 [Anjuta]
-Geometry=976x744+10+10
+Maximized=1
+Geometry=1280x979+0+0
+
+[File Loader]
+Files=../../src/main.c#51%%%../../src/bootstrap/main.cpp#84%%%../../src/bootstrap/serv.cpp#39%%%../../src/bootstrap/serv.h#16%%%../../src/bootstrap/opcodes.h#1%%%../../src/bootstrap/events.h#6%%%../../src/async_serv.c#1%%%../../src/async_serv.h#8
 
 [Document Manager]
 bookmarks=<?xml version="1.0" encoding="UTF-8"?>\n<bookmarks/>\n
@@ -9,7 +13,10 @@ Run in terminal=2
 Working directories=../../.
 
 [Project Manager]
-Shortcut=bacteria//libbacteria//libbacteria.a%%%bacteria//src//bootstrap//bbootstrap-server%%%bacteria//src//client//bacteria-client%%%bacteria//src//bacteria
+Expand=bacteria
+
+[Debugger]
+Stop at beginning=2
 
 [Build]
 Configuration list=1:Default:%%%1:Debug:Debug%%%1:Profiling:Profiling%%%1:Optimized:Optimized
@@ -18,6 +25,3 @@ BuildArgs/Default=--enable-maintainer-mode
 BuildArgs/Debug=--enable-maintainer-mode 'CFLAGS=-g -O0' 'CXXFLAGS=-g -O0' 'JFLAGS=-g -O0' 'FFLAGS=-g -O0'
 BuildArgs/Profiling=--enable-maintainer-mode 'CFLAGS=-g -pg' 'CXXFLAGS=-g -pg' 'JFLAGS=-g -pg' 'FFLAGS=-g -pg'
 BuildArgs/Optimized=--enable-maintainer-mode 'CFLAGS=-O2' 'CXXFLAGS=-O2' 'JFLAGS=-O2' 'FFLAGS=-O2'
-
-[Debugger]
-Stop at beginning=2
